@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 
 #define PORT 6667
+/* Has to be >= 512 per IRC spec */
 #define RECV_BUF_LEN 1024
 
 void irc_send(int, int, ...);
@@ -24,7 +25,10 @@ int main(int argc, char *argv[]) {
     int sock, numbytes;
     char *message;
     char *message_out;
-    char buf[RECV_BUF_LEN];
+    int buf_index = 0;
+    int buf_remain;
+    char buf[RECV_BUF_LEN + 1]; /* +1 just in case, I think its possible to overrun */
+    char save;
     struct hostent *host;
     struct sockaddr_in remote_addr;
 
@@ -63,29 +67,53 @@ int main(int argc, char *argv[]) {
     irc_send(sock, 2, "JOIN ", channel);
 
     while (1) {
-        if ((numbytes = recv(sock, buf, RECV_BUF_LEN - 1, 0)) == -1) {
+        buf_remain = RECV_BUF_LEN - buf_index;
+
+        if ((numbytes = recv(sock, buf + buf_index, buf_remain, 0)) == -1) {
             perror("recv()");
             exit(1);
         }
-        buf[numbytes] = '\0';
-        printf(">> %s", buf);
+        buf_index += numbytes;
 
-        if (strncmp(buf, "PING", 4) == 0) {
-            irc_send(sock, 2, "PONG ", &buf[5]);
-        }
+        while ((message = strchr(buf, '\n')) != NULL) {
+            /* OVERLOADING numbytes */
+            numbytes = message - buf + 1;
+            printf("%i\n", numbytes);
 
-        if ((message = strchr(&buf[1], ':')) != NULL) {
+            save = buf[numbytes];
+            buf[numbytes] = '\0';
+            printf(">> %s", buf);
 
-            /* This is the code that hooks into your handlers */
-            /* See below for implementation of example */
-
-            message_out = example_handler_function(message + 1);
-            if (message_out != NULL) {
-                irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+            if (strncmp(buf, "PING", 4) == 0) {
+                irc_send(sock, 2, "PONG ", &buf[5]);
             }
-            free(message_out);
 
-            /* repeat for each handler */
+            if ((message = strchr(buf, ' ')) != NULL) {
+                printf("%s", message);
+                if (strncmp(message + 1, "376", 3) == 0) {
+                    irc_send(sock, 2, "JOIN ", channel);
+                }
+            }
+
+            if ((message = strchr(&buf[1], ':')) != NULL) {
+
+                /* This is the code that hooks into your handlers */
+                /* See below for implementation of example */
+
+                message_out = example_handler_function(message + 1);
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                }
+                free(message_out);
+
+                /* repeat for each handler */
+            }
+
+            buf[numbytes] = save;
+            memmove(buf, buf + numbytes, RECV_BUF_LEN - numbytes);
+            buf_index -= numbytes;
+
+            memset(buf + buf_index, 0, RECV_BUF_LEN - buf_index);
         }
     }
 
