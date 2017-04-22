@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <assert.h>
 
 #define PORT 6667
 /* Has to be >= 512 per IRC spec */
@@ -19,7 +20,52 @@ char *example_handler_function(const char *message);
 
 char *address = "irc.freenode.net";
 char *channel = "#cnit315_bot_test";
-char *nickname = "test_bot_569";
+char *nickname = "test_bot_315";
+
+char *nick(const char *message) {
+    char *nick;
+    char *nick_end;
+
+    if (message[0] == ':') {
+        if (strchr(message, ' ') < strchr(message, '!')) {
+            return NULL;
+        }
+        if ((nick_end = strchr(message, '!')) != NULL) {
+            nick = calloc(1, 32);
+            memcpy(nick, message + 1, nick_end - message - 1);
+            return nick;
+        } else {
+            return NULL;
+        }
+    } else {
+        return NULL;
+    }
+}
+
+char *command(const char *message) {
+    char *command = calloc(1, 32);
+    char *command_start;
+    char *command_end;
+
+    if (message[0] == ':') {
+        if ((command_start = strchr(message, ' ')) != NULL) {
+            if ((command_end = strchr(command_start + 1, ' ')) != NULL) {
+                memcpy(command, command_start + 1, command_end - command_start - 1);
+                return command;
+            } else {
+                strcpy(command, command_start + 1);
+                return command;
+            }
+        } else {
+            printf("This is an error 47194\n");
+            assert(0);
+        }
+    } else {
+        command_end = strchr(message, ' ');
+        memcpy(command, message, command_end - message);
+        return command;
+    }
+}
 
 int main(int argc, char *argv[]) {
     int sock, numbytes;
@@ -35,15 +81,11 @@ int main(int argc, char *argv[]) {
     if ((host = gethostbyname(address)) == NULL) {
         perror("gethostbyname()");
         exit(1);
-    } else {
-        printf("Client-The remote host is: %s\n", address);
     }
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket()");
         exit(1);
-    } else {
-        printf("Client-The socket() sock is OK...\n");
     }
 
     remote_addr.sin_family = AF_INET;
@@ -57,8 +99,6 @@ int main(int argc, char *argv[]) {
     if (connect(sock, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr)) == -1) {
         perror("connect()");
         exit(1);
-    } else {
-        printf("Client-The connect() is OK...\n");
     }
 
     /* For now, I just assume send() works, we can change this if we want */
@@ -78,18 +118,20 @@ int main(int argc, char *argv[]) {
         while ((message = strchr(buf, '\n')) != NULL) {
             /* OVERLOADING numbytes */
             numbytes = message - buf + 1;
-            printf("%i\n", numbytes);
+            /* printf("%i\n", numbytes); */
 
             save = buf[numbytes];
             buf[numbytes] = '\0';
             printf(">> %s", buf);
+
+            printf("NICK:    '%s'\n", nick(buf));
+            printf("COMMAND: '%s'\n", command(buf));
 
             if (strncmp(buf, "PING", 4) == 0) {
                 irc_send(sock, 2, "PONG ", &buf[5]);
             }
 
             if ((message = strchr(buf, ' ')) != NULL) {
-                printf("%s", message);
                 if (strncmp(message + 1, "376", 3) == 0) {
                     irc_send(sock, 2, "JOIN ", channel);
                 }
@@ -103,8 +145,8 @@ int main(int argc, char *argv[]) {
                 message_out = example_handler_function(message + 1);
                 if (message_out != NULL) {
                     irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
                 }
-                free(message_out);
 
                 /* repeat for each handler */
             }
@@ -112,12 +154,12 @@ int main(int argc, char *argv[]) {
             buf[numbytes] = save;
             memmove(buf, buf + numbytes, RECV_BUF_LEN - numbytes);
             buf_index -= numbytes;
+            /* printf("index: %i, numbytes: %i, buf: %s, buf: %p\n", buf_index, numbytes, buf, buf); */
 
             memset(buf + buf_index, 0, RECV_BUF_LEN - buf_index);
         }
     }
 
-    printf("Client-Closing sock\n");
     close(sock);
     return 0;
 }
