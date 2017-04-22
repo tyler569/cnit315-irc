@@ -15,28 +15,32 @@
 #define PORT 6667
 #define RECV_BUF_LEN 1024
 
-void profanity_handler_function(char *message);
+char *profanity_handler_function(const char *message);
 
 int main(){
 
-char input[31], *test;
+char input[31], *result;
+char *test;
 
 printf("enter a message\n");
 
 fgets(input,128,stdin);
 sscanf(input,"%s", &test);
 
-profanity_handler_function(test);
+result = profanity_handler_function(test + 1);
 
 return 0;
 }
 
-void profanity_handler_function(char *message) {
-    char *ret = "just fucking print something";
-    if (strncmp(message, "~test", 5) == 0) {
+char *profanity_handler_function(const char *message) {
+    char *ret = NULL;
+    char *line = "CNIT BOT is a family friendly bot, please no explicit language";
+   if (strstr(message, "fuck") != NULL || strstr(message, "shit") != NULL || strstr(message, "ass") != NULL || strstr(message, "bitch") != NULL || strstr(message, "damn") != NULL) {
         
-        strcpy(ret, "You did ~test!");
+      ret = malloc(512);
+      strcpy(ret, line);
+
     }
-    printf("\n%s\n", &ret);
+    return ret;
 }
 
