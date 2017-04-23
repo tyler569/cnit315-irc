@@ -111,6 +111,7 @@ void delNote(char * nick, const char * input, int wipe){
 char * searchNotes(const char * searching){
     struct noteNode * current = head;
 
+
     while(current != NULL){
         if(strcmp(searching, current -> userName) == 0){
             return(printNote(current));
@@ -142,7 +143,13 @@ char * printNote(struct noteNode * printMe){
     char * result = malloc(512);
 
     sprintf(result, "%i. %s %s: %s\n", 
-            printMe -> noteNum, asctime(printMe -> timeStamp), printMe -> userName, printMe -> text);
-
+            printMe -> noteNum, removeNewLine(asctime(printMe -> timeStamp)),
+            printMe -> userName, printMe -> text);
     return result;
+}
+
+void removeNewLine(char * buf){
+     char *pos;
+     if((pos=strchr(buf, '\n')) != NULL)
+             *pos = '\0';
 }
