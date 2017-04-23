@@ -11,18 +11,14 @@
 #include <sys/socket.h>
 #include <assert.h>
 
+#include "ircutils.h"
 #include "modules.h"
 
 #define PORT 6667
 /* Has to be >= 512 per IRC spec */
 #define RECV_BUF_LEN 1024
 
-void irc_send(int, int, ...);
 char *example_handler_function(const char *message);
-
-char *address = "irc.freenode.net";
-char *channel = "#cnit315_bot_test";
-char *nickname = "test_bot_315";
 
 char *nick(const char *message) {
     char *nick;
@@ -89,6 +85,8 @@ int main(int argc, char *argv[]) {
         perror("socket()");
         exit(1);
     }
+
+    socket_fd = sock;
 
     remote_addr.sin_family = AF_INET;
     printf("Connecting to %s : %d\n", address, PORT);
@@ -174,6 +172,10 @@ int main(int argc, char *argv[]) {
 void irc_send(int sock, int count, ...) {
     int i;
     va_list v;
+
+    if (sock == 0) {
+        sock = socket_fd;
+    }
 
     va_start(v, count);
     printf("<< ");
