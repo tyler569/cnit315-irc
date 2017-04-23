@@ -4,6 +4,7 @@
 
 /* the handlers */
 char *notesModuleHandler(char *nick, const char *message);
+char *profanity_handler_function(const char *message);
 
 #endif
 
