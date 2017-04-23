@@ -34,8 +34,12 @@ return 0;
 
 char *profanity_handler_function(const char *message) {
     char *ret = NULL;
+    char *newm;
     char *line = "CNIT BOT is a family friendly bot, please no explicit language";
-   if (strstr(message, "fuck") != NULL || strstr(message, "shit") != NULL || strstr(message, "ass") != NULL || strstr(message, "bitch") != NULL || strstr(message, "damn") != NULL) {
+   
+    *newm = tolower(*message);
+
+if (strstr(newm, "fuck") != NULL || strstr(newm, "shit") != NULL || strstr(newm, "ass") != NULL || strstr(newm, "bitch") != NULL || strstr(newm, "damn") != NULL) {
         
       ret = malloc(512);
       strcpy(ret, line);
