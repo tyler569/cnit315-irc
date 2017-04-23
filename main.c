@@ -20,7 +20,6 @@
 #define RECV_BUF_LEN 1024
 
 char *example_handler_function(const char *message);
-char *profanity_handler_function(const char*);
 
 char *nick(const char *message) {
     char *nick;
@@ -201,28 +200,7 @@ void irc_send(int sock, int count, ...) {
     printf("\n");
 }
 
-/*PROFANITY FUNCTION*/
-
-char *profanity_handler_function(const char *message) {
-    char *ret = NULL;
-    char *newm;
-    char *line = "CNIT BOT is a family friendly bot, please no explicit language";
-   
-    *newm = tolower(*message);
-
-if (strstr(newm, "fuck") != NULL || strstr(newm, "shit") != NULL || strstr(newm, "ass") != NULL || strstr(newm, "bitch") != NULL || strstr(newm, "damn") != NULL) {
-        
-      ret = malloc(512);
-      strcpy(ret, line);
-
-    }
-    return ret;
-}
-
-
-
-/*
- * Following is an example of the kind of 'main' function you should
+/* Following is an example of the kind of 'main' function you should
  * write for your parts.  You can have as many helper functions called
  * from this function as you want.
  *
