@@ -19,6 +19,7 @@
 #define RECV_BUF_LEN 1024
 
 char *example_handler_function(const char *message);
+char *profanity_handler_function(const char*);
 
 char *nick(const char *message) {
     char *nick;
@@ -152,7 +153,14 @@ int main(int argc, char *argv[]) {
                     irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
                     free(message_out);
                 }
-
+		/*COMMANDS FOR THE PRORANITY MODULE
+ * 		
+ * 		message_out = profanity_handler_function(message + 1);
+ * 		if (message_out ! = NULL) {
+ * 		    irc_sned(sock, 4, "PRIVMSG ", channel, " :", message_out);
+ * 		    free(message_out);
+ * 		}
+ */
                 /* repeat for each handler */
             }
 
@@ -191,6 +199,26 @@ void irc_send(int sock, int count, ...) {
     send(sock, "\r\n", 2, 0);
     printf("\n");
 }
+
+/*PROFANITY FUNCTION*/
+
+char *profanity_handler_function(const char *message) {
+    char *ret = NULL;
+    char *newm;
+    char *line = "CNIT BOT is a family friendly bot, please no explicit language";
+   
+    *newm = tolower(*message);
+
+if (strstr(newm, "fuck") != NULL || strstr(newm, "shit") != NULL || strstr(newm, "ass") != NULL || strstr(newm, "bitch") != NULL || strstr(newm, "damn") != NULL) {
+        
+      ret = malloc(512);
+      strcpy(ret, line);
+
+    }
+    return ret;
+}
+
+
 
 /*
  * Following is an example of the kind of 'main' function you should
