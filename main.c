@@ -11,6 +11,8 @@
 #include <sys/socket.h>
 #include <assert.h>
 
+#include "modules.h"
+
 #define PORT 6667
 /* Has to be >= 512 per IRC spec */
 #define RECV_BUF_LEN 1024
@@ -147,6 +149,11 @@ int main(int argc, char *argv[]) {
                     irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
                     free(message_out);
                 }
+                message_out = notesModuleHandler(nick(buf), message + 1);
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
+                }
 
                 /* repeat for each handler */
             }
@@ -211,7 +218,7 @@ char *example_handler_function(const char *message) {
     char *ret = NULL;
     if (strncmp(message, "~test", 5) == 0) {
         ret = malloc(512);
-        strcpy(ret, "You did ~test!");
+        strcpy(ret, "Test successful");
     }
     return ret;
 }

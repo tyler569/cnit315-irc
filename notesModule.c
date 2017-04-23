@@ -35,21 +35,26 @@ static struct noteNode * head = NULL;
  * Deletes individual user notes associated with a nickname
  */
 char *notesModuleHandler(char * nick, const char * input){
-    char * retValue = malloc(512);
+    char * retValue;
 
     if(strncmp(input, "~note add ", 10) == 0){
+        retValue= malloc(512);
         newNote(input + 10, nick);
         strcpy(retValue, "New Note Added!");
+        return retValue;
     }else if(strncmp(input, "~note search ", 13) == 0){
-        
+        retValue= malloc(512);
+
         if(strncmp(input, "~note search me", 15) == 0){
             retValue = searchNotes(nick);
         }else{
             retValue = searchNotes(input + 13);
         }
+        return retValue;
 
     }else if(strncmp(input, "~note del ", 10) == 0){
-        
+        retValue= malloc(512);
+
         if(strncmp(input, "~note del all", 13) == 0){ 
             delNote(nick, input, 1);
             strcpy(retValue, "All user notes deleted.");
@@ -57,21 +62,23 @@ char *notesModuleHandler(char * nick, const char * input){
             delNote(nick, input, 0);
             strcpy(retValue, "Note deleted.");
         }
+        return retValue;
 
     }else if(strncmp(input, "~note", 5) == 0){ 
+        retValue= malloc(512);
         strcpy(retValue, "Note command format: ~note <add, search [me], del [all] [num]> [note]");
+        return retValue;
     }else{
-        strcpy(retValue, "Note command format: ~note <add, search [me], del [all] [num]> [note]");
+        return NULL;
     }   
 
-    return retValue;
 }
 
 void delNote(char * nick, const char * input, int wipe){
-    
+
     struct noteNode * current = head;
     struct noteNode * previous = head;
-    
+
     if(wipe == 0){
         while(current != NULL){
             if(strcmp(nick, current -> userName) == 0){
@@ -111,19 +118,19 @@ char * searchNotes(const char * searching){
 
         current = current -> nextNote;
     }
-    
+
     return NULL;
 }
 
 /* Function for to create new notes */
 void newNote(const char * note, char * usrName){
-    noteCounter ++;
     struct noteNode * newNoteNode = calloc(1, sizeof(struct noteNode));
+    noteCounter ++;
 
     newNoteNode -> noteNum = noteCounter;
     strcpy(newNoteNode -> text, note);
     strcpy(newNoteNode -> userName, usrName);
-   
+
     time (&rawTime);
     newNoteNode -> timeStamp = localtime ( &rawTime );
 
@@ -135,7 +142,7 @@ char * printNote(struct noteNode * printMe){
     char * result = malloc(512);
 
     sprintf(result, "%i. %s %s: %s\n", 
-                printMe -> noteNum, asctime(printMe -> timeStamp), printMe -> userName, printMe -> text);
-    
+            printMe -> noteNum, asctime(printMe -> timeStamp), printMe -> userName, printMe -> text);
+
     return result;
 }

@@ -1,4 +1,4 @@
 
 all:
-	gcc -Wall -pedantic -ansi main.c -O0 -g
+	gcc -Wall -pedantic -ansi notesModule.c main.c -O0 -g
 
