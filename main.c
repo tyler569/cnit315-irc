@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include "ircutils.h"
 #include "modules.h"
@@ -156,8 +157,8 @@ int main(int argc, char *argv[]) {
 		/*COMMANDS FOR THE PRORANITY MODULE*/
   		
   		message_out = profanity_handler_function(message + 1);
-  		if (message_out ! = NULL) {
-  		    irc_sned(sock, 4, "PRIVMSG ", channel, " :", message_out);
+  		if (message_out != NULL) {
+  		    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
   		    free(message_out);
   		}
  
