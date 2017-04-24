@@ -33,7 +33,9 @@ int main(){
     return 0;
 }
 
-char *profanity_handler_function(const char *message) {
+char *profanity_handler_function(char *nick, const char *message) {
+    struct names {char *nick; int count; struct names *next;};
+
     char *ret = NULL;
     char *newm;
     char *line = "CNIT BOT is a family friendly bot, please no explicit language";
