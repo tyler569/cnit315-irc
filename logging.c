@@ -90,7 +90,7 @@ char *Time_Handler(char *command, char *user, const char *message)
 			onlinenode = head;
 			while(onlinenode != NULL)/*make sure to end with the last node*/
 			{
-				if(strncmp(onlinenode->user,message+8,MAXNICK)==0)
+				if(strncmp(onlinenode->user,message+9,MAXNICK)==0)
 				{
 					if (onlinenode->JoinTime > onlinenode->LeaveTime)
 					{
