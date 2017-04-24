@@ -21,6 +21,12 @@
 
 char *example_handler_function(const char *message);
 
+char *address = "irc.freenode.net";
+char *channel = "#cnit315_bot_test";
+char *nickname = "test_bot_315";
+
+int socket_fd = 0;
+
 char *nick(const char *message) {
     char *nick;
     char *nick_end;
