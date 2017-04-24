@@ -123,7 +123,7 @@ void delNote(char * nick, const char * input, int wipe){
 /* Function to search for notes associated with usernames */
 char * searchNotes(const char * searching){
     struct noteNode * current = head;
-    const char * tempSearch = removeNewLine(searching);
+    const char * tempSearch = searching;/*removeNewLine(searching);*/
     long searchIndex = strtol(searching, (char **)NULL, 10);
     int found = 0;
     if(searchIndex <= 0){

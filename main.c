@@ -159,13 +159,21 @@ int main(int argc, char *argv[]) {
                     irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
                     free(message_out);
                 }
-		/*COMMANDS FOR THE PRORANITY MODULE*/
-  		
-  		message_out = profanity_handler_function(message + 1);
-  		if (message_out != NULL) {
-  		    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
-  		    free(message_out);
-  		}
+  		        message_out = profanity_handler_function(message + 1);
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
+                }
+                message_out = Time_Handler(command(buf), nick(buf), message + 1);
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
+                }
+                message_out = reverse_handler(message + 1);
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
+                }
  
                 /* repeat for each handler */
             }

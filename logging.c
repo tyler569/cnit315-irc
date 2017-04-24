@@ -1,14 +1,17 @@
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "modules.h"
+
 #define MAXNICK 32
 
 int GetTimeStamp();
 /*int JoinSeconds();
 int LeaveSeconds();
 int GetSessionInSeconds();*/
-char *Time_Handler(char *command, char *user, const char *message);
 
 struct Users
 {
@@ -28,11 +31,6 @@ struct Users
 
 static struct Users *head = NULL;
 /*static struct OfflineUsers *head = NULL;*/
-
-int main()
-{
-	return 0;
-}
 
 int GetTimeStamp()
 {
@@ -90,7 +88,7 @@ char *Time_Handler(char *command, char *user, const char *message)
 			onlinenode = head;
 			while(onlinenode != NULL)/*make sure to end with the last node*/
 			{
-				if(strncmp(onlinenode->user,message+9,MAXNICK)==0)
+				if(strncmp(onlinenode->user,message+8,MAXNICK)==0)
 				{
 					if (onlinenode->JoinTime > onlinenode->LeaveTime)
 					{
