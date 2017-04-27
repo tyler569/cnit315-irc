@@ -16,34 +16,35 @@
 /*int main(){
 
     
-    char *word="shit";
+    char *word="SHIT";
     char *nick="Bob";
     char *nnick="tom";
     char *nword="~profanity";
     char *back1, *back2, *back3, *back4, *back5;
     
      	
-    back1 = profanity_handler_function(nick, word);
+    back1 = profanity_handler_function(nnick, word);
     printf("\n%s\n",back1);
-
+word = "SHIT";
     back2 = profanity_handler_function(nick, word);
     printf("\n%s\n",back2);   
-		
-    back3 = profanity_handler_function(nick, word);
+word = "SHIT";	
+    back3 = profanity_handler_function(nnick, word);
     printf("\n%s\n",back3);
-
+word = "SHIT";
     back4 = profanity_handler_function(nick, word);
     printf("\n%s\n",back4);
-
+word = "SHIT";
     back5 = profanity_handler_function(NULL, nword);
 
-    
     return 0;
 }*/
 
 char *profanity_handler_function(char *nick, char *message) {
     
     /*Variables*/
+    struct names *keep;
+    keep = (struct names *)malloc(sizeof(struct names));
     bool check = true; 
     char *ret = NULL;
     char *newm;
@@ -62,32 +63,32 @@ char *profanity_handler_function(char *nick, char *message) {
     if (strstr(tmp, "fuck") != NULL || strstr(tmp, "shit") != NULL ||
         strstr(tmp, " ass ") != NULL || strstr(tmp, "bitch") != NULL ||
         strstr(tmp, "damn") != NULL) {
-       
+   
 	 /*If there have been other profane words*/
 	if(list!=NULL){
         /*new pointer to traverse the list*/
-	struct names *keep = list;
-
-        while(keep != NULL){  
+	keep = list;
+        while(list!=NULL){  
         /*if it is a reoccuring nick increment their count*/
-           if(strcmp(keep->nick,nick) == 0){
-	   keep->count = keep->count + 1;
+           if(strcmp(list->nick,nick) == 0){
+	   list->count = list->count + 1;
 	   check = false;
 	   break;
            } 
 	
-	keep=keep->next;
+	list=list->next;
 	}
-	
+	list = keep;
+		
 	/*if it is a new nick add it to the list*/
 	if(check==true){
-
 	struct names *temp;
 	temp  = (struct names *)malloc(sizeof(struct names));
-	strcpy(temp->nick,nick);
+	temp->nick = nick;
 	temp->count = 1;
 	temp->next = list;
 	list = temp;
+	
 	}
 
 	}
@@ -98,8 +99,9 @@ char *profanity_handler_function(char *nick, char *message) {
 	quick = (struct names *)malloc(sizeof(struct names));
 	quick->nick=nick;
 	quick->count=1;
-	quick->next=NULL;
+	quick->next=0;
         list = quick;
+	
 	}
         
         ret = malloc(512);
@@ -108,14 +110,14 @@ char *profanity_handler_function(char *nick, char *message) {
 
     /*if they want to see the list*/
     if(strstr(tmp,"~profanity") != NULL){
-	struct names *print;
-	print = (struct names *)malloc(sizeof(struct names));
-	print = list;
+	keep = list;
 	/*print the list*/
-	while(print != NULL){
-	printf("Name: %s        Count: %d\n",print->nick,print->count);
-	print=print->next;
+	while(list != NULL){
+	printf("Name: %s        Count: %d\n",list->nick,list->count);
+	list=list->next;
 	}
+	list = keep;
+	
     }
     /*Return used profanity message, or null*/
     return ret;
