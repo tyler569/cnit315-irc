@@ -2,11 +2,11 @@
 #ifndef _IRCUTILS_H
 #define _IRCUTILS_H
 
-char *address = "irc.freenode.net";
-char *channel = "#cnit315_bot_test";
-char *nickname = "test_bot_315";
+extern char *address;
+extern char *channel;
+extern char *nickname;
 
-int socket_fd = 0;
+extern int socket_fd;
 
 void irc_send(int, int, ...);
 

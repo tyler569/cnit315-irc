@@ -47,6 +47,7 @@ char *profanity_handler_function(char *nick, char *message) {
     keep = (struct names *)malloc(sizeof(struct names));
     bool check = true; 
     char *ret = NULL;
+
     char *newm;
     char *line = "CNIT BOT is a family friendly bot, please no explicit language \n";
     char tmp[100];
@@ -95,13 +96,14 @@ char *profanity_handler_function(char *nick, char *message) {
 	/*if the list is empty, start the list*/
 	if(list == NULL){ 
 
-	struct names *quick;
-	quick = (struct names *)malloc(sizeof(struct names));
-	quick->nick=nick;
-	quick->count=1;
-	quick->next=0;
-        list = quick;
-	
+
+    struct names *quick;
+    quick = (struct names *)malloc(sizeof(struct names));
+    quick->nick=nick;
+    quick->count=1;
+    quick->next=0;
+          list = quick;
+
 	}
         
         ret = malloc(512);
@@ -119,7 +121,9 @@ char *profanity_handler_function(char *nick, char *message) {
 	list = keep;
 	
     }
+
     /*Return used profanity message, or null*/
+
     return ret;
 }
 
