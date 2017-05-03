@@ -82,6 +82,7 @@ char *Time_Handler(char *command, char *user, const char *message)
 	
 	if(strncmp("PRIVMSG", command, 7) == 0)
 	{
+		printf("Success: PRIVMSG!\n");
 		if(strncmp(message, "~online", 7) == 0)
 		{
 			/*Search for username at character 8 in message, if they exist give online status by last time they joined is after the last time they left, and if they're offline, the last time they left is after the last time they joined, IF ONLINE: they have been online for certain amount of time, AND the total amount of time ever online. IF OFFLINE: Been offline for certain amount of time, and the total amount of time ever online*/
@@ -110,6 +111,7 @@ char *Time_Handler(char *command, char *user, const char *message)
 	}
 	else if(strncmp("JOIN", command, 4) == 0)
 	{
+		printf("Success: Join!\n");
 		/*If join, is there currently a struct for that user, if there is, update the join time, if there is not, make new element on list with username and jointime*/
 		onlinenode = head;
 		while(onlinenode->next != NULL)/*make sure to end with the last node*/
@@ -147,6 +149,7 @@ char *Time_Handler(char *command, char *user, const char *message)
 	}
 	else if(strncmp("QUIT", command, 4) == 0 || strncmp("PART", command, 4) == 0)
 	{
+		printf("Success: Quit!\n");
 		/*Search for user, if there is already that user, update leavetime and totalsessiontime by comparing leave and join time and add to a total time, if not, ignore */
 		onlinenode = head;
 		while(onlinenode != NULL)/*make sure to end with the last node*/
