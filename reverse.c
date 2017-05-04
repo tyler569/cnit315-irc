@@ -88,7 +88,7 @@ char *reverse_handler(const char *message) {
     if (strncmp(message, "~reverse", 8) != 0) {
         return NULL;
     }
-    for (i=strlen(message) - 3; i>9; i--) {
+    for (i=strlen(message) - 1; i>=9; i--) {
         ret[j++] = message[i];
     }
     return ret;

@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
     int buf_index = 0;
     int buf_remain;
     char buf[RECV_BUF_LEN + 1]; /* +1 just in case, I think its possible to overrun */
-    char save;
+    char save, save2, save3;
     struct hostent *host;
     struct sockaddr_in remote_addr;
 
@@ -128,8 +128,13 @@ int main(int argc, char *argv[]) {
             /* printf("%i\n", numbytes); */
 
             save = buf[numbytes];
+            save2 = buf[numbytes - 1];
+            save3 = buf[numbytes - 2];
             buf[numbytes] = '\0';
-            printf(">> %s", buf);
+            buf[numbytes - 1] = '\0';
+            buf[numbytes - 2] = '\0';
+
+            printf(">> %s\n", buf);
 
             printf("NICK:    '%s'\n", nick(buf));
             printf("COMMAND: '%s'\n", command(buf));
@@ -141,6 +146,14 @@ int main(int argc, char *argv[]) {
             if ((message = strchr(buf, ' ')) != NULL) {
                 if (strncmp(message + 1, "376", 3) == 0) {
                     irc_send(sock, 2, "JOIN ", channel);
+                }
+            }
+
+            if (strcmp(command(buf), "PRIVMSG") == 0) {
+  		        message_out = profanity_handler_function(nick(buf), message + 1);
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
                 }
             }
 
@@ -159,11 +172,6 @@ int main(int argc, char *argv[]) {
                     irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
                     free(message_out);
                 }
-  		        message_out = profanity_handler_function(message + 1);
-                if (message_out != NULL) {
-                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
-                    free(message_out);
-                }
                 message_out = Time_Handler(command(buf), nick(buf), message + 1);
                 if (message_out != NULL) {
                     irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
@@ -176,9 +184,17 @@ int main(int argc, char *argv[]) {
                 }
  
                 /* repeat for each handler */
+            } else {
+                message_out = Time_Handler(command(buf), nick(buf), "");
+                if (message_out != NULL) {
+                    irc_send(sock, 4, "PRIVMSG ", channel, " :", message_out);
+                    free(message_out);
+                }
             }
 
             buf[numbytes] = save;
+            buf[numbytes - 1] = save2;
+            buf[numbytes - 2] = save3;
             memmove(buf, buf + numbytes, RECV_BUF_LEN - numbytes);
             buf_index -= numbytes;
             /* printf("index: %i, numbytes: %i, buf: %s, buf: %p\n", buf_index, numbytes, buf, buf); */

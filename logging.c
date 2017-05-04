@@ -79,6 +79,8 @@ char *Time_Handler(char *command, char *user, const char *message)
 	struct Users *onlinenode;
 	struct Users *newnode;
 	char *ret = NULL;
+
+    printf("inside'%s'\n", command);
 	
 	if(strncmp("PRIVMSG", command, 7) == 0)
 	{
@@ -89,19 +91,20 @@ char *Time_Handler(char *command, char *user, const char *message)
 			onlinenode = head;
 			while(onlinenode != NULL)/*make sure to end with the last node*/
 			{
-				if(strncmp(onlinenode->user,message+8,MAXNICK)==0)
+                printf("message + 8 = '%s'", message + 8);
+				if(strcmp(onlinenode->user, message + 8) == 0)
 				{
 					if (onlinenode->JoinTime > onlinenode->LeaveTime)
 					{
-						int diff = difftime(onlinenode->TotalTime,GetTimeStamp());
+						int diff = difftime(onlinenode->TotalTime, GetTimeStamp());
 						ret = malloc(512);
-						sprintf(ret,"%d,%d",diff,onlinenode->TotalTime);
+						sprintf(ret, "%d,%d", diff, onlinenode->TotalTime);
 						return ret;
 					}
 
 					ret = malloc(512);
-					sprintf(ret,"%d",onlinenode->TotalTime);
-					return ret;/*What do I return?*/
+					sprintf(ret,"%d", onlinenode->TotalTime);
+					return ret; /*What do I return?*/
 				}
 				onlinenode = onlinenode->next;
 			}
@@ -114,25 +117,30 @@ char *Time_Handler(char *command, char *user, const char *message)
 		printf("Success: Join!\n");
 		/*If join, is there currently a struct for that user, if there is, update the join time, if there is not, make new element on list with username and jointime*/
 		onlinenode = head;
-		while(onlinenode->next != NULL)/*make sure to end with the last node*/
-		{
-			if(strncmp(onlinenode->user,user,MAXNICK)==0)
-			{
-				onlinenode->JoinTime = GetTimeStamp();
+        if (onlinenode != NULL) {
+            while(onlinenode->next != NULL)/*make sure to end with the last node*/
+            {
+                if(strncmp(onlinenode->user,user,MAXNICK)==0)
+                {
+                    onlinenode->JoinTime = GetTimeStamp();
 
-				ret = malloc(512);
-				strcpy(ret, "User Found");
-				return ret;/*What do I return?*/
-			}
-			onlinenode = onlinenode->next;
-		}
-		if(strncmp(onlinenode->user,user,MAXNICK)==0)/*check last node in list*/
-		{
-			onlinenode->JoinTime = GetTimeStamp();
-			ret = malloc(512);
-			strcpy(ret, "User Found");
-			return ret;/*What do I return?*/
-		}
+                    ret = malloc(512);
+                    strcpy(ret, "User Found");
+                    return ret;/*What do I return?*/
+                }
+                onlinenode = onlinenode->next;
+            }
+            if(strncmp(onlinenode->user,user,MAXNICK)==0)/*check last node in list*/
+            {
+                onlinenode->JoinTime = GetTimeStamp();
+                ret = malloc(512);
+                strcpy(ret, "User Found");
+                return ret;/*What do I return?*/
+            }
+        } else {
+            head = malloc(sizeof(struct Users));
+            onlinenode = head;
+        }
 		
 		/*make new node since user does not exist*/
 		newnode = malloc(sizeof(struct Users));
@@ -147,7 +155,7 @@ char *Time_Handler(char *command, char *user, const char *message)
 		strcpy(ret, "Made New User");
 		return ret;/*What do I return?*/
 	}
-	else if(strncmp("QUIT", command, 4) == 0 || strncmp("PART", command, 4) == 0)
+	else if((strncmp("QUIT", command, 4) == 0) || (strncmp("PART", command, 4) == 0))
 	{
 		printf("Success: Quit!\n");
 		/*Search for user, if there is already that user, update leavetime and totalsessiontime by comparing leave and join time and add to a total time, if not, ignore */
