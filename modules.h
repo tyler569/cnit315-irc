@@ -1,3 +1,9 @@
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * IRC modules header
+ */
+
 
 #ifndef _MODULES_H
 #define _MODULES_H

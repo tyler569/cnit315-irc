@@ -1,4 +1,12 @@
 
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * file by Coy Burton
+ *
+ * User logging and timestamping module
+ */
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>

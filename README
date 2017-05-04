@@ -1,0 +1,20 @@
+CNIT 315 IRC Bot Project
+========================
+
+- Tyler Philbrick
+- Sean Klinger
+- Coy Burton
+- Daniel Corum
+- Joseph Huss
+
+Make project by running `make`, binary will be called 'ircbot'
+
+By default, bot joins irc.freenode.net, channel #cnit_bot_test, this can be changed at top of main.c
+
+You can run the bot using `make run`
+
+
+
+
+
+

@@ -1,3 +1,11 @@
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * File by Tyler Philbrick and Joseph Huss
+ *
+ * Fun reversing module
+ */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

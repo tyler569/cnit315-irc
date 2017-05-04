@@ -1,3 +1,11 @@
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * file by Sean Klinger
+ *
+ * Notes storage and management module
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

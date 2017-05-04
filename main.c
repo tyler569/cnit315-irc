@@ -1,4 +1,12 @@
 
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * file by Tyler Philbrick
+ *
+ * Base IRC Connection and test handler
+ */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -61,15 +69,13 @@ char *command(const char *message) {
                 strcpy(command, command_start + 1);
                 return command;
             }
-        } else {
-            printf("This is an error 47194\n");
-            assert(0);
         }
     } else {
         command_end = strchr(message, ' ');
         memcpy(command, message, command_end - message);
         return command;
     }
+    return "";
 }
 
 int main(int argc, char *argv[]) {
@@ -96,7 +102,6 @@ int main(int argc, char *argv[]) {
     socket_fd = sock;
 
     remote_addr.sin_family = AF_INET;
-    printf("Connecting to %s : %d\n", address, PORT);
 
     remote_addr.sin_port = htons(PORT);
     remote_addr.sin_addr = *((struct in_addr *)host->h_addr);
@@ -125,7 +130,6 @@ int main(int argc, char *argv[]) {
         while ((message = strchr(buf, '\n')) != NULL) {
             /* OVERLOADING numbytes */
             numbytes = message - buf + 1;
-            /* printf("%i\n", numbytes); */
 
             save = buf[numbytes];
             save2 = buf[numbytes - 1];
@@ -135,9 +139,6 @@ int main(int argc, char *argv[]) {
             buf[numbytes - 2] = '\0';
 
             printf(">> %s\n", buf);
-
-            printf("NICK:    '%s'\n", nick(buf));
-            printf("COMMAND: '%s'\n", command(buf));
 
             if (strncmp(buf, "PING", 4) == 0) {
                 irc_send(sock, 2, "PONG ", &buf[5]);
@@ -220,9 +221,7 @@ void irc_send(int sock, int count, ...) {
 
     for (i=0; i<count; i++) {
         char *buf = va_arg(v, char *);
-        /* TODO Error check this */
         send(sock, buf, strlen(buf), 0);
-        printf("%s", buf);
     }
     va_end(v);
 

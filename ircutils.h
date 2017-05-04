@@ -1,3 +1,11 @@
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * file by Tyler Philbrick
+ *
+ * Base IRC Connection and test handler header
+ */
+
 
 #ifndef _IRCUTILS_H
 #define _IRCUTILS_H

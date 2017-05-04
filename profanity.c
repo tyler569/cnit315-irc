@@ -1,3 +1,11 @@
+/*
+ * CNIT315 FINAL PROJECT
+ *
+ * File by Danial Corum
+ *
+ * Profanity filter module
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,12 +71,10 @@ char *profanity_handler_function(char *nick, char *message) {
             strcasestr(message, "ass") != NULL || strcasestr(message, "bitch") != NULL ||
             strcasestr(message, "damn") != NULL) {*/
 
-    printf("foobarbaz: %s %s\n", message, strcasestr(message, "fuck"));
     if (strcasestr(message, "fuck") || strcasestr(message, "shit") ||
             strcasestr(message, "ass") || strcasestr(message, "bitch") ||
             strcasestr(message, "damn")) {
 
-        printf("You did a profanity handler\n");
         /*If there have been other profane words*/
         if(list!=NULL){
             /*new pointer to traverse the list*/
